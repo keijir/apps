@@ -1,0 +1,56 @@
+<!doctype html>
+<!--
+  keijir/apps の入口。https://keijir.github.io/apps/ に出る。
+  アプリが増えたら、ここに1行足す。中身はこれだけでよく、凝らない。
+-->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>つくっているもの</title>
+<meta name="description" content="個人でつくっている iPhone アプリのページです。">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="hitomazu/assets/icon.png" sizes="any">
+<style>
+:root{ color-scheme:light }
+*,*::before,*::after{ box-sizing:border-box }
+body{
+  margin:0; min-height:100vh; background:#fff; color:#141414;
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN",
+    "Yu Gothic","Noto Sans JP",sans-serif;
+  font-feature-settings:"palt" 1; line-height:1.8;
+  display:grid; place-content:center; padding:40px 24px;
+}
+main{ max-width:520px; width:100% }
+h1{
+  font-family:"Hiragino Mincho ProN","Yu Mincho",serif;
+  font-size:19px; font-weight:600; letter-spacing:.04em; margin:0 0 28px; color:#707070;
+}
+a.row{
+  display:flex; align-items:center; gap:18px; padding:18px 20px; margin-bottom:12px;
+  border:1px solid #e0e0e0; border-radius:24px; text-decoration:none; color:inherit;
+  transition:border-color .16s, transform .16s cubic-bezier(.2,.8,.3,1);
+}
+a.row:hover{ border-color:#141414; transform:translateY(-2px) }
+a.row img{ width:52px; height:52px; border-radius:12px; border:1px solid #e0e0e0; flex:none }
+.name{ font-weight:600; font-size:16px }
+.sub{ font-size:13px; color:#707070 }
+footer{ margin-top:30px; font-size:12px; color:#707070 }
+</style>
+</head>
+<body>
+<main>
+  <h1>つくっているもの</h1>
+
+  <a class="row" href="hitomazu/">
+    <img src="hitomazu/assets/icon.png" alt="">
+    <span>
+      <span class="name">ひとまず</span><br>
+      <span class="sub">毎日ひらく、静かな写真ビューア　—　待機リスト受付中</span>
+    </span>
+  </a>
+
+  <footer>個人がひとりで作っています。</footer>
+</main>
+</body>
+</html>

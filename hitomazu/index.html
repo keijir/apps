@@ -1,0 +1,796 @@
+<!doctype html>
+<!--
+  ============================================================================
+  待機リストのランディングページ。GitHub Pages で出す。
+
+  ここが原本。公開は別のリポジトリ（keijir/apps）へ写して行う——このリポジトリは
+  非公開で、無料アカウントでは非公開リポジトリの Pages が使えないため。
+
+    ./scripts/publish-lp.sh          （このファイルと assets を keijir/apps へ写す）
+
+  公開URL: https://keijir.github.io/apps/hitomazu/
+  写した先を直さないこと。原本はここで、あちらは出力。
+
+  出す前に埋めるところ（4つ）:
+    1. アプリ名 —— 「ひとまず」に決めた（docs/strategy/marketing.md 5.）。
+       ただし同名アプリの有無は未確認。実機の App Store で「ひとまず」を検索し、
+       衝突していたら次点の「とっておく」へ差し替える。直すのはこのファイルの
+       <title> / og:title / .mark / footer の4か所と、mobile/app.json の expo.name。
+    2. 待機リストの送り先 —— <form> の action に Tally のフォームURL。
+       項目とTally側の設定は docs/strategy/waitlist-form.md にある。
+       空のままだと送信できない（その旨が出る）。
+    3. 画面の写真 —— docs/assets/screens/01〜08.png（実機のスクリーンショット）。
+       無いあいだは、それぞれの枠に画面の名前が出るだけで、崩れない。
+    4. OGP画像 —— docs/assets/ogp.png（1200×630）。
+
+  文言の根拠は docs/strategy/ にある。値段と「まだ入っていないもの」を
+  ここに書いてあるのは意図的で、隠して集めた待機リストは測ったことに
+  ならないため（promotion.md 4.）。
+  ============================================================================
+-->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ひとまず — 消さずに片づく写真アプリ</title>
+<meta name="description" content="毎日ひらく、静かな写真ビューア。整理する時間を、そもそも取らなくていい。写真も、どれを外したかも、端末の中だけにあります。iPhone向け・買い切り¥600で準備中。">
+<meta property="og:title" content="ひとまず — 消さずに片づく写真アプリ">
+<meta property="og:description" content="消すかどうかを、いま決めなくていい。毎日ひらく、静かな写真ビューア。">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/ogp.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="assets/icon.png" sizes="any">
+<link rel="apple-touch-icon" href="assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+/* ---------------------------------------------------------------------------
+   アプリ本体のデザイントークン（mobile/src/theme.ts）をそのまま持ってくる。
+   ギャラリー白、インク、ヘアライン、影なし、押せるものはすべてスタジアムピル。
+   色は写真だけが持つ。LPも同じ規則で作る——別物に見えたら、それは嘘になる。
+--------------------------------------------------------------------------- */
+:root{
+  --canvas:#ffffff; --canvas-soft:#f3f3f3; --field:#f0f0f0;
+  --hairline:#e0e0e0; --hairline-soft:#f0f0f0;
+  --ink:#141414; --ink-soft:#262626; --muted:#707070; --faint:#adadad;
+  --accent:#0066ff; --danger:#ff3b30; --keep:#30d158;
+  --r-sm:16px; --r-md:24px; --r-full:9999px;
+  --mincho:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN",
+         "Yu Gothic","Noto Sans JP",sans-serif;
+  --gut:clamp(20px,5vw,64px);
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--canvas); color:var(--ink);
+  font-family:var(--sans); font-size:16px; line-height:1.75;
+  font-feature-settings:"palt" 1; letter-spacing:.01em;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+/* ギャラリーの紙の質感。ごく薄く、色は足さない */
+body::after{
+  content:""; position:fixed; inset:0; z-index:9; pointer-events:none;
+  opacity:.028; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+img{max-width:100%; display:block}
+a{color:inherit}
+
+/* --- 版面 ---------------------------------------------------------------- */
+.wrap{max-width:1080px; margin:0 auto; padding-inline:var(--gut)}
+.narrow{max-width:640px}
+section{position:relative; padding-block:clamp(72px,11vw,132px)}
+section+section{border-top:1px solid var(--hairline-soft)}
+
+/* 節の番号。明朝の数字を小さく置くだけの、editorialな目印 */
+.num{
+  font-family:var(--mincho); font-size:13px; font-weight:600; color:var(--muted);
+  letter-spacing:.22em; display:block; margin-bottom:22px;
+}
+.num::after{content:""; display:inline-block; width:34px; height:1px;
+  background:var(--hairline); vertical-align:4px; margin-left:12px}
+
+h1,h2,h3{font-family:var(--mincho); font-weight:800; letter-spacing:.005em; margin:0}
+h1{font-size:clamp(34px,7.4vw,68px); line-height:1.32}
+h2{font-size:clamp(26px,4.4vw,42px); line-height:1.45; margin-bottom:26px}
+h3{font-size:19px; line-height:1.6; font-weight:600; margin-bottom:8px}
+p{margin:0 0 20px}
+.lead{font-size:clamp(16px,1.9vw,19px); line-height:2; color:var(--ink-soft); font-weight:300}
+.note{font-size:13px; line-height:1.85; color:var(--muted)}
+.tiny{font-size:12px; line-height:1.8; color:var(--muted)}
+strong{font-weight:600}
+mark{background:none; color:var(--ink); font-weight:600;
+  box-shadow:inset 0 -.42em 0 var(--field)}
+
+/* --- 押せるもの＝すべてスタジアムピル（アプリと同じ規則） ------------------ */
+.pill{
+  display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  min-height:52px; padding:0 30px; border-radius:var(--r-full);
+  background:var(--ink); color:#fff; border:1px solid var(--ink);
+  font-family:var(--sans); font-size:15px; font-weight:600; letter-spacing:.02em;
+  text-decoration:none; cursor:pointer;
+  transition:transform .16s cubic-bezier(.2,.8,.3,1), background .16s, color .16s;
+}
+.pill:hover{transform:translateY(-2px)}
+.pill:active{transform:translateY(0)}
+.pill.ghost{background:transparent; color:var(--ink); border-color:var(--hairline)}
+.pill.ghost:hover{border-color:var(--ink)}
+.pill.sm{min-height:40px; padding:0 20px; font-size:13px}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:var(--r-sm)}
+
+/* --- ヘッダ -------------------------------------------------------------- */
+header{
+  position:sticky; top:0; z-index:20; background:rgba(255,255,255,.86);
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--hairline-soft);
+}
+header .wrap{display:flex; align-items:center; justify-content:space-between;
+  min-height:66px; gap:16px}
+.mark{font-family:var(--mincho); font-weight:800; font-size:15.5px; letter-spacing:.03em;
+  text-decoration:none; white-space:nowrap; min-width:0}
+.mark span{color:var(--muted); font-weight:400}
+header .pill{flex:none; white-space:nowrap}
+@media(max-width:520px){
+  .mark span{display:none}
+  .mark{font-size:14.5px}
+  header .pill.sm{padding:0 15px; font-size:12.5px}
+}
+
+/* --- 冒頭 ---------------------------------------------------------------- */
+.hero{padding-block:clamp(40px,6vw,72px) clamp(32px,5vw,52px)}
+.eyebrow{
+  display:inline-flex; align-items:center; gap:9px; margin-bottom:24px;
+  padding:7px 17px 7px 13px; border:1px solid var(--hairline);
+  border-radius:var(--r-full); font-size:12.5px; font-weight:600; color:var(--muted);
+}
+.eyebrow::before{content:""; width:6px; height:6px; border-radius:50%;
+  background:var(--accent); flex:none}
+.hero h1{max-width:15em}
+.hero h1 .soft{color:var(--muted); font-weight:400}
+.hero .lead{max-width:34em; margin-top:24px}
+.cta{display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:30px}
+.cta-note{font-size:12.5px; color:var(--muted); line-height:1.7}
+
+/* --- 実演 ---------------------------------------------------------------- */
+.demo{background:var(--canvas-soft); border-radius:var(--r-md);
+  padding:clamp(24px,4vw,40px); margin-top:clamp(30px,4.5vw,46px)}
+.demo-head{margin-bottom:4px}
+.demo-head h3{margin:0 0 10px}
+.demo-head .note{margin:0}
+.demo-grid{display:grid; gap:26px 44px; align-items:start}
+/* 狭い画面では、何を払うのかを見る前に「すべて削除」を読ませない */
+.demo-stack{order:-1}
+@media(min-width:800px){
+  .demo-grid{grid-template-columns:1fr 264px; align-items:center}
+  .demo-stack{order:0}
+  .stage{margin-top:26px}
+}
+.stage{position:relative; height:340px; max-width:264px; margin:34px auto 0;
+  touch-action:none; user-select:none; -webkit-user-select:none}
+.card{
+  position:absolute; inset:0; border-radius:var(--r-sm); overflow:hidden;
+  background:#fff; border:1px solid var(--hairline);
+  transform-origin:50% 120%; will-change:transform;
+  transition:transform .34s cubic-bezier(.2,.8,.3,1), opacity .34s;
+}
+.card.drag{transition:none}
+.card svg{width:100%; height:100%; display:block}
+.card-tag{position:absolute; left:14px; bottom:12px; font-size:11.5px;
+  color:#fff; letter-spacing:.06em; text-shadow:0 1px 3px rgba(0,0,0,.45)}
+.stamp{
+  position:absolute; top:18px; padding:6px 15px; border-radius:var(--r-full);
+  font-size:12px; font-weight:700; letter-spacing:.08em; color:#fff; opacity:0;
+  transition:opacity .12s;
+}
+.stamp.t{left:16px; background:var(--danger)}
+.stamp.k{right:16px; background:var(--keep)}
+.stage-empty{position:absolute; inset:0; display:grid; place-content:center;
+  text-align:center; gap:6px; color:var(--muted); font-size:13.5px;
+  opacity:0; transition:opacity .3s}
+.stage.done .stage-empty{opacity:1}
+.hint{display:none; justify-content:space-between; max-width:264px; margin:14px auto 0;
+  font-size:12px; color:var(--muted)}
+@media(min-width:800px){.hint{display:flex}}
+.keys{display:flex; gap:10px; flex-wrap:wrap}
+
+.tray{margin-top:24px; padding-top:22px; border-top:1px solid var(--hairline)}
+.tray-row{display:flex; flex-wrap:wrap; align-items:center; gap:14px 20px}
+.count{font-family:var(--mincho); font-size:15px; font-weight:600}
+.count b{font-size:27px; font-weight:800; margin:0 3px}
+.tray-acts{display:flex; gap:10px; flex-wrap:wrap}
+.tray-msg{margin-top:16px; font-size:13px; line-height:1.85; color:var(--muted);
+  min-height:1.85em}
+.tray-msg b{color:var(--ink); font-weight:600}
+
+/* --- 3つの段 ------------------------------------------------------------- */
+.steps{display:grid; gap:2px; background:var(--hairline-soft);
+  border:1px solid var(--hairline-soft); border-radius:var(--r-md); overflow:hidden;
+  grid-template-columns:repeat(auto-fit,minmax(232px,1fr)); margin-top:44px}
+.step{background:var(--canvas); padding:30px 26px 32px}
+.step .n{font-family:var(--mincho); font-size:34px; font-weight:800;
+  color:var(--field); line-height:1; margin-bottom:14px}
+.step p{margin:0; font-size:14.5px; line-height:1.9; color:var(--muted)}
+
+/* --- 画面（べた見せ） ---------------------------------------------------- */
+.sheet{display:grid; gap:22px; margin-top:44px;
+  grid-template-columns:repeat(auto-fill,minmax(min(200px,44vw),1fr))}
+figure{margin:0}
+.phone{
+  position:relative; aspect-ratio:9/19.5; border-radius:var(--r-md); overflow:hidden;
+  background:var(--canvas-soft); border:1px solid var(--hairline);
+}
+.phone img{width:100%; height:100%; object-fit:cover}
+.phone.pending::after{
+  content:attr(data-label); position:absolute; inset:0; display:grid;
+  place-content:center; text-align:center; padding:20px; color:var(--muted);
+  font-size:12.5px; line-height:1.8; white-space:pre-line;
+}
+.phone.pending img{display:none}
+figcaption{margin-top:11px; font-size:12.5px; color:var(--muted); line-height:1.7}
+
+/* --- 値段 ---------------------------------------------------------------- */
+.price{border:1px solid var(--ink); border-radius:var(--r-md);
+  padding:clamp(26px,4vw,44px); margin-top:40px}
+.price .amount{font-family:var(--mincho); font-size:clamp(38px,7vw,62px);
+  font-weight:800; line-height:1.15; letter-spacing:-.01em}
+.price .amount small{font-size:.36em; font-weight:600; color:var(--muted);
+  margin-left:12px; letter-spacing:.04em}
+.price ul{margin:26px 0 0; padding:0; list-style:none; display:grid; gap:13px}
+.price li{position:relative; padding-left:24px; font-size:14.5px; line-height:1.85}
+.price li::before{content:""; position:absolute; left:0; top:11px;
+  width:11px; height:1px; background:var(--ink)}
+
+/* --- 正直に書くところ ---------------------------------------------------- */
+.honest{display:grid; gap:0; margin-top:40px; border-top:1px solid var(--hairline)}
+.honest div{display:grid; gap:4px 28px; grid-template-columns:1fr;
+  padding:18px 2px; border-bottom:1px solid var(--hairline-soft)}
+.honest dt{font-weight:600; font-size:14.5px}
+.honest dd{margin:0; font-size:13.5px; color:var(--muted); line-height:1.85}
+@media(min-width:680px){.honest div{grid-template-columns:15em 1fr}}
+
+/* --- 待機リスト ---------------------------------------------------------- */
+.signup{background:var(--ink); color:#fff; border-radius:var(--r-md);
+  padding:clamp(30px,5vw,56px); margin-top:8px}
+.signup h2{color:#fff; margin-bottom:18px}
+.signup .lead{color:rgba(255,255,255,.72)}
+.signup .tiny{color:rgba(255,255,255,.5)}
+.form{display:flex; flex-wrap:wrap; gap:11px; margin:30px 0 16px}
+.form input{
+  flex:1 1 260px; min-height:52px; padding:0 22px; border-radius:var(--r-full);
+  border:1px solid rgba(255,255,255,.24); background:rgba(255,255,255,.06);
+  color:#fff; font-family:var(--sans); font-size:15px;
+}
+.form input::placeholder{color:rgba(255,255,255,.56)}
+.form input:focus{outline:none; border-color:#fff; background:rgba(255,255,255,.1)}
+.form .pill{background:#fff; color:var(--ink); border-color:#fff; flex:none}
+.form-msg{font-size:13.5px; line-height:1.8; color:rgba(255,255,255,.82); min-height:1.8em}
+
+/* --- 脚 ------------------------------------------------------------------ */
+footer{padding-block:56px 72px; border-top:1px solid var(--hairline-soft)}
+.foot{display:flex; flex-wrap:wrap; gap:14px 32px; justify-content:space-between;
+  align-items:baseline}
+footer a{color:var(--muted); text-decoration:none; font-size:13px;
+  border-bottom:1px solid var(--hairline); padding-bottom:1px}
+footer a:hover{color:var(--ink); border-color:var(--ink)}
+
+/* --- 出しかた ------------------------------------------------------------ */
+.reveal{opacity:0; transform:translateY(18px)}
+.reveal.in{opacity:1; transform:none;
+  transition:opacity .82s cubic-bezier(.2,.7,.3,1), transform .82s cubic-bezier(.2,.7,.3,1)}
+.hero .reveal.in{transition-delay:var(--d,0ms)}
+@media (prefers-reduced-motion:reduce){
+  .reveal,.reveal.in{opacity:1; transform:none; transition:none}
+  .card{transition:none}
+  .pill:hover{transform:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="mark" href="#top">ひとまず<span>　—　写真アプリ</span></a>
+    <a class="pill sm" href="#signup">待機リストに入る</a>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============ 冒頭。ここでほぼ決まるので、言うことは1つだけ ============ -->
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow reveal" style="--d:0ms">写真が1万枚を超えている人へ</span>
+    <h1 class="reveal" style="--d:70ms">
+      「あとで見返すかも<br>しれない」を、<br>
+      <span class="soft">押しのけなくていい。</span>
+    </h1>
+    <p class="lead reveal" style="--d:150ms">
+      左に払っても、写真は消えません。<mark>削除候補に入るだけ</mark>です。
+      実際に消えるのは、あとで見返して「すべて削除」を押したときだけ。
+      消すかどうかを、その場で決めなくていい——それが、このアプリの主眼です。
+    </p>
+    <div class="cta reveal" style="--d:230ms">
+      <a class="pill" href="#signup">待機リストに入る</a>
+      <span class="cta-note">
+        iPhone向け・2026年11月ごろ公開予定<br>
+        <strong>買い切り ¥600</strong>（月々の課金はありません）
+      </span>
+    </div>
+
+    <!-- 動画より強い。読ませずに、やってもらう -->
+    <div class="demo reveal" style="--d:310ms">
+      <div class="demo-head">
+        <h3>ここで、試してください</h3>
+        <p class="note">
+          カードを左右にドラッグ。<strong>何枚払っても、1枚も消えません。</strong>
+          アプリの中でも、まったく同じことが起きます。
+        </p>
+      </div>
+
+      <div class="demo-grid">
+        <div class="demo-copy">
+          <div class="keys">
+            <button class="pill ghost sm" id="kTrash" type="button">← 削除候補へ</button>
+            <button class="pill ghost sm" id="kKeep" type="button">残す →</button>
+          </div>
+
+          <div class="tray">
+            <div class="tray-row">
+              <span class="count">削除候補　<b id="nTrash">0</b>枚　<span class="tiny" id="nKeep"></span></span>
+              <span class="tray-acts">
+                <button class="pill sm" id="doDelete" type="button">すべて削除</button>
+                <button class="pill ghost sm" id="doUndo" type="button">やっぱり戻す</button>
+              </span>
+            </div>
+            <p class="tray-msg" id="trayMsg" role="status" aria-live="polite">
+              払った写真は、ここに溜まります。決めるのは、あとでまとめて。
+            </p>
+          </div>
+        </div>
+
+        <div class="demo-stack">
+          <div class="stage" id="stage">
+            <div class="stage-empty">
+              <div>4枚とも、決め終わりました。</div>
+              <div class="tiny">トレイを見てください。</div>
+            </div>
+          </div>
+          <div class="hint" aria-hidden="true">
+            <span>← 削除候補へ</span><span>残す →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 二本目：開くアプリを変えるだけ ============ -->
+<section>
+  <div class="wrap">
+    <span class="num reveal">01</span>
+    <div class="narrow">
+      <h2 class="reveal">整理の時間は、取らなくていい。<br>開くアプリを、変えるだけ。</h2>
+      <p class="lead reveal">
+        「毎週30分、写真を整理する」は続きません。3年続かなかったのが、その証拠です。
+        このアプリがお願いすることは1つだけ——<mark>写真アプリの代わりに、こちらを開く</mark>。
+        見ているあいだに、まとまり、外れ、片づいていきます。
+      </p>
+    </div>
+    <div class="steps reveal">
+      <div class="step">
+        <div class="n">見</div>
+        <h3>ふだんは、ただ見る</h3>
+        <p>撮った写真が時系列で並びます。月の帯を左右にたぐると、月が変わる。
+           要らない1枚は、消さずにホームから外すだけ。写真アプリを開けば、そこにあります。</p>
+      </div>
+      <div class="step">
+        <div class="n">溜</div>
+        <h3>決めたことは、溜まる</h3>
+        <p>左に払った写真は削除候補へ。同じ日・同じ場所の写真は、イベント候補としてまとまる。
+           どれも、その場で確定しません。</p>
+      </div>
+      <div class="step">
+        <div class="n">返</div>
+        <h3>結果は、写真アプリへ返す</h3>
+        <p>まとめたイベントは、同じ名前のアルバムとして iOS の「写真」に置けます。
+           アルバムは写真を指しているだけなので、入れても写真は増えません。
+           <strong>このアプリを消しても、アルバムは残ります。</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 画面をべた見せする（有料で試せないので） ============ -->
+<section>
+  <div class="wrap">
+    <span class="num reveal">02</span>
+    <div class="narrow">
+      <h2 class="reveal">買う前に、全部見てください。</h2>
+      <p class="lead reveal">
+        有料のアプリは、入れて試すことができません。だから、隠しません。
+        <mark>主要な画面をそのまま出します。</mark>
+      </p>
+    </div>
+    <div class="sheet reveal" id="sheet"></div>
+  </div>
+</section>
+
+<!-- ============ 三本目：端末から出ない。だから無料にしない ============ -->
+<section>
+  <div class="wrap">
+    <span class="num reveal">03</span>
+    <div class="narrow">
+      <h2 class="reveal">端末から出ません。<br>だから、無料にしません。</h2>
+      <p class="lead reveal">
+        写真も、あなたがどれを外したかも、この端末の中だけにあります。
+        アカウントもログインもありません。解析のたぐいも入れていません。
+        地図だけは既定で出さないようにしてあり、自分で出すと決めたときだけ、
+        どのあたりの地図が要るかを配信元に伝えます。
+        <span class="note">——ここを「一切通信しません」と書かないのは、それが嘘になるからです。</span>
+      </p>
+    </div>
+
+    <div class="price reveal narrow">
+      <div class="amount">¥600<small>買い切り・一度きり</small></div>
+      <ul>
+        <li>無料のアプリは、いつかどこかで別の稼ぎ方を探します。広告か、データか、月々の課金か。</li>
+        <li>このアプリはサーバを1台も持ちません。<strong>毎月かかる費用が無いので、毎月いただく理由もありません。</strong></li>
+        <li>買い切りは、値段の話ではなく<strong>約束の担保</strong>です。あなたが商品にならないための、¥600。</li>
+        <li>合わなければ、App Store から返金を申請できます。その道を隠しません。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ できないことを、買う前に ============ -->
+<section>
+  <div class="wrap">
+    <span class="num reveal">04</span>
+    <div class="narrow">
+      <h2 class="reveal">まだ、できないこと。</h2>
+      <p class="lead reveal">
+        買ったあとに知ると、がっかりします。だから先に書きます。
+      </p>
+    </div>
+    <dl class="honest reveal narrow">
+      <div>
+        <dt>写真の自動振り分け</dt>
+        <dd>いま自動で付くのは<strong>スクリーンショットだけ</strong>です。家族・食事・ペット・風景は、
+            自分で付けます。端末の中だけで判定する仕組みを準備中で、公開後に入れます。</dd>
+      </div>
+      <div>
+        <dt>似た写真・ブレの判定</dt>
+        <dd>同上。連写の中から1枚を選ぶような判定は、まだ入っていません。</dd>
+      </div>
+      <div>
+        <dt>「重複項目」の取り込み</dt>
+        <dd>iOSの「写真」アプリが作る重複項目の一覧は、外のアプリに渡されません。
+            こちらからは読めないので、入口ごと外してあります。</dd>
+      </div>
+      <div>
+        <dt>クラウド同期・家族との共有</dt>
+        <dd>サーバを持たない作りなので、<strong>この先も入れません。</strong>
+            複数の端末で同じ状態を持ちたい方には向きません。</dd>
+      </div>
+      <div>
+        <dt>iPad・Android・英語</dt>
+        <dd>最初は iPhone・日本語のみです。iPadは縦横の作り直しが要るため、
+            要望を見てから決めます。</dd>
+      </div>
+      <div>
+        <dt>写真そのものへの加工</dt>
+        <dd>これは「できない」ではなく、そうしない方針です。フィルターも透かしも
+            <strong>新しく作る1枚にしか掛からず、元の写真は1枚も書き換えません。</strong></dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ 待機リスト ============ -->
+<section id="signup">
+  <div class="wrap narrow">
+    <div class="signup reveal">
+      <h2>出たら、お知らせします。</h2>
+      <p class="lead">
+        いま作っているのは個人です。作るかどうか、どこまで作るかを、
+        並んだ人の数で決めています。<strong style="color:#fff">名前が並べば、出します。</strong>
+      </p>
+      <!--
+        TODO: action= に Tally のフォームURL（https://tally.so/r/XXXXXX）を入れる。
+        method="GET" なので、押すと ?email=... 付きで Tally へ飛び、1問目が
+        埋まった状態で開く。JavaScript が動かない環境でもそのまま通る。
+        Tally 側の1問目のキーを email にしておくこと（項目は
+        docs/strategy/waitlist-form.md）。
+        どこから来たかを数えるので、配る先ごとに末尾を変える:
+          .../#signup?src=x  → hidden の src に入れる（同ファイル参照）
+      -->
+      <form class="form" id="waitForm" action="" method="GET" target="_blank" rel="noopener">
+        <label for="email" class="tiny" style="position:absolute;left:-9999px">メールアドレス</label>
+        <input id="email" name="email" type="email" required
+               placeholder="メールアドレス" autocomplete="email">
+        <input type="hidden" name="src" id="srcField" value="lp">
+        <button class="pill" type="submit">待機リストに入る</button>
+      </form>
+      <p class="form-msg" id="formMsg" role="status" aria-live="polite">
+        ここで預かるのは、メールアドレスだけです。お知らせを送ったら、消します。
+      </p>
+      <p class="tiny" style="margin:20px 0 0">
+        アプリが写真を送らないことと、あなたが自分の意思でメールを預けることは、別の話です。
+        その区別をはっきりさせておきたいので、ここに書いています。
+      </p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span class="tiny">ひとまず　—　毎日ひらく、静かな写真ビューア</span>
+    <span class="tiny">個人がひとりで作っています。2026年11月ごろ公開予定。</span>
+    <span style="display:flex; gap:22px; flex-wrap:wrap">
+      <a href="#signup">待機リスト</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+/* ---------------------------------------------------------------------------
+   出しかた。スクロールで一度だけ。減らす設定の人には何もしない。
+--------------------------------------------------------------------------- */
+(function(){
+  var els = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window) ||
+      matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    els.forEach(function(e){ e.classList.add('in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(rows){
+    rows.forEach(function(r){
+      if (r.isIntersecting) { r.target.classList.add('in'); io.unobserve(r.target); }
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: .08 });
+  els.forEach(function(e){ io.observe(e); });
+})();
+
+/* ---------------------------------------------------------------------------
+   画面の見せ物。写真が入るまでは、枠に画面の名前が出るだけで崩れない。
+   docs/assets/screens/01.png … 08.png を置けば、そのまま差し替わる。
+--------------------------------------------------------------------------- */
+(function(){
+  var SCREENS = [
+    ['01', 'ホーム',        '撮った順に並ぶ。1日の先頭が大きい'],
+    ['02', 'Viewer',        '左で削除候補、右で残す。指に追従して傾く'],
+    ['03', 'ホームの帯',    'まとめられそうな写真が、見ているついでに出る'],
+    ['04', '整理',          '削除候補の枚数と、実際に空く容量'],
+    ['05', '振り返る',      '行った都道府県が埋まっていく'],
+    ['06', 'X年前の今日',   '同じ月日の、過去の1枚'],
+    ['07', '作る',          '4:5 / 1:1 / 9:16 に整えて書き出す'],
+    ['08', '設定',          '自宅と地元、家族、パスコード']
+  ];
+  var host = document.getElementById('sheet');
+  SCREENS.forEach(function(s){
+    var fig = document.createElement('figure');
+    var box = document.createElement('div');
+    box.className = 'phone pending';
+    box.setAttribute('data-label', s[1] + '\n（画面を入れるところ）');
+    var img = document.createElement('img');
+    img.alt = s[1] + 'の画面';
+    img.loading = 'lazy';
+    img.addEventListener('load', function(){ box.classList.remove('pending'); });
+    img.src = 'assets/screens/' + s[0] + '.png';
+    box.appendChild(img);
+    var cap = document.createElement('figcaption');
+    cap.textContent = s[1] + '　' + s[2];
+    fig.appendChild(box); fig.appendChild(cap);
+    host.appendChild(fig);
+  });
+})();
+
+/* ---------------------------------------------------------------------------
+   実演。ここがこのページで唯一「読ませない」ところ。
+   左に払っても消えない、というのは説明されるより、やったほうが早い。
+
+   写真そのものは置かない。低いコントラストで被写体の形だけを描く——
+   アプリの中の見本（scenes.mjs）と同じ考え方で、本物の写真のふりをしない。
+--------------------------------------------------------------------------- */
+(function(){
+  // 本物の写真は置かない。低いコントラストで被写体の形だけを描く——
+  // アプリの中の見本（design/scenes.mjs）と同じ考え方で、写真のふりをしない。
+  var CARDS = [
+    { tag:'2026年8月14日　海', body:
+      '<rect width="264" height="340" fill="#dde5eb"/>'
+      + '<rect y="196" width="264" height="144" fill="#b8c8d3"/>'
+      + '<circle cx="190" cy="76" r="29" fill="#ffffff" opacity=".6"/>'
+      + '<path d="M0 196 h264" stroke="#a9bcc9" stroke-width="2"/>'
+      + '<path d="M0 258 q66 -13 132 0 t132 0" stroke="#a6bac7" stroke-width="2" fill="none"/>'
+      + '<path d="M0 292 q66 -13 132 0 t132 0" stroke="#a1b6c4" stroke-width="2" fill="none"/>' },
+
+    { tag:'2026年8月14日　海', body:
+      '<rect width="264" height="340" fill="#e3e8e5"/>'
+      + '<rect y="228" width="264" height="112" fill="#d2cabb"/>'
+      + '<path d="M0 228 h264" stroke="#c0b8a8" stroke-width="2"/>'
+      + '<circle cx="104" cy="188" r="13" fill="#9fa9a6"/>'
+      + '<path d="M104 202 v40 M104 214 l-16 14 M104 214 l16 14 M104 242 l-13 22 M104 242 l13 22"'
+      + ' stroke="#9fa9a6" stroke-width="7" stroke-linecap="round" fill="none"/>'
+      + '<circle cx="166" cy="204" r="10" fill="#aab3b0"/>'
+      + '<path d="M166 215 v30 M166 224 l-12 11 M166 224 l12 11 M166 245 l-10 18 M166 245 l10 18"'
+      + ' stroke="#aab3b0" stroke-width="6" stroke-linecap="round" fill="none"/>' },
+
+    { tag:'2026年8月15日　昼食', body:
+      '<rect width="264" height="340" fill="#eae3d8"/>'
+      + '<circle cx="132" cy="180" r="82" fill="#f7f3ec"/>'
+      + '<circle cx="132" cy="180" r="82" fill="none" stroke="#d8cdbb" stroke-width="2"/>'
+      + '<circle cx="132" cy="180" r="52" fill="none" stroke="#ddd2c0" stroke-width="2"/>'
+      + '<path d="M108 168 q24 -20 48 0 q-24 26 -48 0z" fill="#cfc0a8"/>'
+      + '<circle cx="118" cy="200" r="9" fill="#d6c8b1"/><circle cx="146" cy="199" r="7" fill="#d6c8b1"/>'
+      + '<path d="M36 128 v104 M228 128 v104" stroke="#ded4c5" stroke-width="4" stroke-linecap="round"/>' },
+
+    { tag:'2026年8月15日　書類', body:
+      '<rect width="264" height="340" fill="#ececec"/>'
+      + '<rect x="46" y="74" width="172" height="212" rx="6" fill="#fbfbfb" stroke="#dcdcdc" stroke-width="2"/>'
+      + '<rect x="70" y="104" width="88" height="10" rx="5" fill="#cfcfcf"/>'
+      + '<rect x="70" y="140" width="124" height="7" rx="3.5" fill="#e0e0e0"/>'
+      + '<rect x="70" y="162" width="124" height="7" rx="3.5" fill="#e0e0e0"/>'
+      + '<rect x="70" y="184" width="82" height="7" rx="3.5" fill="#e0e0e0"/>'
+      + '<rect x="70" y="222" width="124" height="30" rx="15" fill="#e6e6e6"/>' }
+  ];
+
+  var stage   = document.getElementById('stage');
+  var nTrash  = document.getElementById('nTrash');
+  var nKeep   = document.getElementById('nKeep');
+  var msg     = document.getElementById('trayMsg');
+  var btnDel  = document.getElementById('doDelete');
+  var btnUndo = document.getElementById('doUndo');
+  if (!stage) return;
+
+  var trash = 0, keep = 0, deleted = false, live = [];
+
+  function svg(c){
+    return '<svg viewBox="0 0 264 340" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
+      + c.body + '</svg>';
+  }
+
+  function build(){
+    stage.querySelectorAll('.card').forEach(function(n){ n.remove(); });
+    stage.classList.remove('done');
+    live = [];
+    CARDS.slice().reverse().forEach(function(c, i){
+      var el = document.createElement('div');
+      el.className = 'card';
+      el.innerHTML = svg(c)
+        + '<span class="stamp t">削除候補</span><span class="stamp k">残す</span>'
+        + '<span class="card-tag">' + c.tag + '</span>';
+      // 奥のカードほど、少しだけ小さく置く
+      var depth = CARDS.length - 1 - i;
+      el.style.transform = 'translateY(' + (depth * -25) + 'px) scale(' + (1 - depth * .04) + ')';
+      stage.appendChild(el);
+      live.unshift(el);
+    });
+    live.reverse();
+  }
+
+  function top(){ return live[live.length - 1]; }
+
+  function restack(){
+    live.forEach(function(el, i){
+      var depth = live.length - 1 - i;
+      el.style.transform = 'translateY(' + (depth * -25) + 'px) scale(' + (1 - depth * .04) + ')';
+    });
+    if (!live.length) stage.classList.add('done');
+  }
+
+  function say(t){ msg.innerHTML = t; }
+
+  function tally(){
+    nTrash.textContent = trash;
+    nKeep.textContent  = keep ? '（残した写真　' + keep + '枚）' : '';
+  }
+
+  function fly(el, dir){
+    var i = live.indexOf(el);
+    if (i > -1) live.splice(i, 1);
+    el.classList.remove('drag');
+    void el.offsetWidth; // drag を外したことを確定させてから動かす（さもないと飛ばずに消える）
+    el.style.transform = 'translate(' + (dir * 460) + 'px, 30px) rotate(' + (dir * 22) + 'deg)';
+    el.style.opacity = '0';
+    setTimeout(function(){ el.remove(); }, 340);
+    if (dir < 0) { trash++; } else { keep++; }
+    tally(); restack();
+    if (!live.length) {
+      say('4枚とも決めましたが、<b>1枚も消えていません。</b>'
+        + '消えるのは「すべて削除」を押したときだけです。');
+    } else if (dir < 0) {
+      say('削除候補に入りました。<b>まだ消えていません。</b>');
+    } else {
+      say('残しました。ホームにそのまま並びます。');
+    }
+  }
+
+  /* ドラッグ。指／マウスのどちらでも同じ経路を通る */
+  var cur = null, x0 = 0, dx = 0;
+  stage.addEventListener('pointerdown', function(e){
+    if (deleted) return;
+    var el = top(); if (!el) return;
+    cur = el; x0 = e.clientX; dx = 0;
+    el.classList.add('drag');
+    el.setPointerCapture && el.setPointerCapture(e.pointerId);
+  });
+  stage.addEventListener('pointermove', function(e){
+    if (!cur) return;
+    dx = e.clientX - x0;
+    cur.style.transform = 'translateX(' + dx + 'px) rotate(' + (dx * .052) + 'deg)';
+    cur.querySelector('.stamp.t').style.opacity = dx < -18 ? Math.min(1, -dx / 88) : 0;
+    cur.querySelector('.stamp.k').style.opacity = dx >  18 ? Math.min(1,  dx / 88) : 0;
+  });
+  function release(){
+    if (!cur) return;
+    var el = cur; cur = null;
+    if (Math.abs(dx) > 74) { fly(el, dx < 0 ? -1 : 1); return; }
+    el.classList.remove('drag');
+    el.querySelector('.stamp.t').style.opacity = 0;
+    el.querySelector('.stamp.k').style.opacity = 0;
+    restack();
+  }
+  stage.addEventListener('pointerup', release);
+  stage.addEventListener('pointercancel', release);
+
+  /* ドラッグできない人のための、同じ操作 */
+  document.getElementById('kTrash').addEventListener('click', function(){
+    if (!deleted && top()) fly(top(), -1);
+  });
+  document.getElementById('kKeep').addEventListener('click', function(){
+    if (!deleted && top()) fly(top(), 1);
+  });
+
+  btnDel.addEventListener('click', function(){
+    if (!trash) { say('削除候補が空です。まずカードを左に払ってみてください。'); return; }
+    deleted = true;
+    say('<b>' + trash + '枚、ここで初めて消えました。</b>'
+      + 'それでも iOS の「最近削除した項目」に30日残ります。'
+      + '——アプリの中でも、消えるのはこの一押しのときだけです。');
+    trash = 0; tally();
+  });
+
+  btnUndo.addEventListener('click', function(){
+    trash = 0; keep = 0; deleted = false;
+    tally(); build();
+    say('戻しました。<b>削除候補は、何度でも戻せます。</b>'
+      + '「消すかどうかを、いま決めなくていい」というのは、こういうことです。');
+  });
+
+  build(); tally();
+})();
+
+/* ---------------------------------------------------------------------------
+   待機リスト。送り先が未設定のうちは、黙って失敗させずにそう言う。
+--------------------------------------------------------------------------- */
+(function(){
+  var form = document.getElementById('waitForm');
+  var out  = document.getElementById('formMsg');
+  if (!form) return;
+
+  // どこから来たかを、Tally の hidden へ引き継ぐ。?src=x のような形で配る。
+  // 解析を入れずに、どの入口が効いたかを数えるための唯一の手段。
+  try {
+    var src = new URLSearchParams(location.search).get('src');
+    if (src) document.getElementById('srcField').value = src.slice(0, 40);
+  } catch (e) { /* 古い環境。既定の lp のままで困らない */ }
+
+  form.addEventListener('submit', function(e){
+    if (!form.getAttribute('action')) {
+      e.preventDefault();
+      out.innerHTML = '（準備中です。フォームの送り先がまだ設定されていません。）';
+      return;
+    }
+    out.innerHTML = '別のタブでフォームが開きます。あと3つだけ聞かせてください。';
+  });
+})();
+</script>
+
+</body>
+</html>
