@@ -1,14 +1,12 @@
 <!doctype html>
 <!--
-  keijir/apps の入口。https://keijir.github.io/apps/ に出る。
+  keijir/apps の入口。https://keijir.github.io/apps/
   ここは出力なので直さない。原本は PhotoViewer/docs/site-index.html。
 
-  埋めるところ（2つ）:
-    1. About の本文 —— いまは事実だけを1行置いてある。自分の言葉に差し替える
-    2. bakuei.com の1行説明 —— 中身を確かめられなかったので空にしてある。
-       data-note を書けばそのまま出る
+  残っていること:
+    - About の本文。いまは事実（東京・ひとり）を1行置いてあるだけ
 
-  つくったものが増えたら <article class="work"> を1つ足すだけ。
+  つくったものが増えたら <a class="work"> を1つ足す。
 -->
 <html lang="ja">
 <head>
@@ -56,8 +54,7 @@ section{padding-block:clamp(44px,7vw,72px)}
 section+section{border-top:1px solid var(--hairline-soft)}
 
 header{border-bottom:1px solid var(--hairline-soft)}
-header .wrap{display:flex; align-items:center; justify-content:space-between;
-  min-height:64px; gap:16px}
+header .wrap{display:flex; align-items:center; min-height:64px}
 .mark{font-family:var(--mincho); font-weight:800; font-size:17px; letter-spacing:.06em;
   text-decoration:none; white-space:nowrap}
 
@@ -97,6 +94,7 @@ p{margin:0 0 18px}
   background:var(--ink); color:#fff; font-size:11px; font-weight:600;
   letter-spacing:.04em; white-space:nowrap;
 }
+.badge-live{background:#0b7a55}
 .work .host{display:block; font-size:12px; color:var(--muted); margin-top:4px}
 
 .links{list-style:none; margin:0; padding:0; display:grid; gap:2px}
@@ -109,7 +107,11 @@ p{margin:0 0 18px}
 .links .u{color:var(--muted); border-bottom:1px solid var(--hairline); padding-bottom:1px}
 
 footer{padding-block:36px 56px; border-top:1px solid var(--hairline-soft)}
-footer .wrap{display:flex; flex-wrap:wrap; gap:10px 24px; justify-content:space-between}
+footer .wrap{display:flex; flex-wrap:wrap; gap:10px 24px; justify-content:space-between;
+  align-items:center}
+.xlink{display:inline-flex; align-items:center; color:var(--muted);
+  transition:color .16s, transform .16s cubic-bezier(.2,.8,.3,1)}
+.xlink:hover{color:var(--ink); transform:translateY(-1px)}
 </style>
 </head>
 <body>
@@ -117,8 +119,6 @@ footer .wrap{display:flex; flex-wrap:wrap; gap:10px 24px; justify-content:space-
 <header>
   <div class="wrap">
     <a class="mark" href="./">keijir</a>
-    <a class="tiny" href="https://x.com/keijir" target="_blank" rel="noopener"
-       style="text-decoration:none">X&nbsp;→</a>
   </div>
 </header>
 
@@ -147,13 +147,12 @@ footer .wrap{display:flex; flex-wrap:wrap; gap:10px 24px; justify-content:space-
       </span>
     </a>
 
-    <!-- TODO: 1行説明（class="note"）を書く。中身を確かめられなかったので空にしてある -->
     <a class="work" href="https://bakuei.com/" target="_blank" rel="noopener">
-      <span class="tile">b</span>
+      <span class="tile"><img src="assets/bakuei.png" alt=""></span>
       <span>
-        <span class="name">bakuei</span>
-        <span class="note"></span>
-        <span class="host">bakuei.com</span>
+        <span class="name">bakuei<span class="badge badge-live">公開中</span></span>
+        <span class="note">キャンプの持ち物・予定・割り勘を、URL1本で共有。</span>
+        <span class="host">bakuei.com · 2026年5月15日から</span>
       </span>
     </a>
   </div>
@@ -165,10 +164,6 @@ footer .wrap{display:flex; flex-wrap:wrap; gap:10px 24px; justify-content:space-
     <ul class="links">
       <li><a href="https://x.com/keijir" target="_blank" rel="noopener">
         <span class="k">X</span><span class="u">@keijir</span></a></li>
-      <li><a href="https://github.com/keijir" target="_blank" rel="noopener">
-        <span class="k">GitHub</span><span class="u">github.com/keijir</span></a></li>
-      <li><a href="https://bakuei.com/" target="_blank" rel="noopener">
-        <span class="k">bakuei</span><span class="u">bakuei.com</span></a></li>
     </ul>
   </div>
 </section>
@@ -178,7 +173,13 @@ footer .wrap{display:flex; flex-wrap:wrap; gap:10px 24px; justify-content:space-
 <footer>
   <div class="wrap">
     <span class="tiny">© 2026 keijir</span>
-    <span class="tiny">個人でつくっています。</span>
+    <a class="xlink" href="https://x.com/keijir" target="_blank" rel="noopener"
+       aria-label="X（@keijir）">
+      <!-- Simple Icons — X。読み込みを増やさないよう、形だけを埋め込んである -->
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+        <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/>
+      </svg>
+    </a>
   </div>
 </footer>
 

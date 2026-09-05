@@ -1,33 +1,21 @@
 <!doctype html>
 <!--
   ============================================================================
-  待機リストのランディングページ。GitHub Pages で出す。
+  待機リストのランディングページ。ここが原本で、公開は keijir/apps へ写して行う。
 
-  ここが原本。公開は別のリポジトリ（keijir/apps）へ写して行う——このリポジトリは
-  非公開で、無料アカウントでは非公開リポジトリの Pages が使えないため。
+    ./scripts/publish-lp.sh
+    https://keijir.github.io/apps/hitomazu/
 
-    ./scripts/publish-lp.sh          （このファイルと assets を keijir/apps へ写す）
+  写した先は出力なので直さない。
 
-  公開URL: https://keijir.github.io/apps/hitomazu/
-  写した先を直さないこと。原本はここで、あちらは出力。
+  残っていること:
+    - OGP画像（docs/assets/ogp.png・1200×630）。無くても崩れないが、
+      Xに貼ったときの見え方が弱くなる
+    - App Store に「ひとまず」の同名アプリが無いかの確認。あった場合に直すのは
+      <title> / og:title / .mark / footer と、mobile/app.json の expo.name
 
-  出す前に埋めるところ（4つ）:
-    1. アプリ名 —— 「ひとまず」に決めた（docs/strategy/marketing.md 5.）。
-       ただし同名アプリの有無は未確認。実機の App Store で「ひとまず」を検索し、
-       衝突していたら次点の「とっておく」へ差し替える。直すのはこのファイルの
-       <title> / og:title / .mark / footer の4か所と、mobile/app.json の expo.name。
-    2. 待機リストの送り先 —— 済み（https://tally.so/r/1Aek7g）。
-       項目とTally側の設定は docs/strategy/waitlist-form.md にある。
-    3. 画面の写真 —— docs/assets/screens/01〜10.jpg。
-       ここに置くのは幅800pxのJPEGで、フル解像度のものではない。表示は幅200px
-       なので、2倍の画面でも800pxで足りる。ストアへ出すぶんは別に取っておくこと
-       （App Store Connect には実機の解像度のまま上げる）。
-       無いあいだは、それぞれの枠に画面の名前が出るだけで、崩れない。
-    4. OGP画像 —— docs/assets/ogp.png（1200×630）。
-
-  文言の根拠は docs/strategy/ にある。値段と「まだ入っていないもの」を
-  ここに書いてあるのは意図的で、隠して集めた待機リストは測ったことに
-  ならないため（promotion.md 4.）。
+  値段と「まだ入っていないもの」をここに書いてあるのは意図的。隠して集めた
+  待機リストは、測ったことにならないため（docs/strategy/promotion.md 4.）。
   ============================================================================
 -->
 <html lang="ja">
@@ -277,6 +265,9 @@ footer{padding-block:56px 72px; border-top:1px solid var(--hairline-soft)}
 footer a{color:var(--muted); text-decoration:none; font-size:13px;
   border-bottom:1px solid var(--hairline); padding-bottom:1px}
 footer a:hover{color:var(--ink); border-color:var(--ink)}
+.xlink{display:inline-flex; align-items:center; border-bottom:none !important;
+  color:var(--muted); padding-bottom:0}
+.xlink:hover{color:var(--ink)}
 
 /* --- 出しかた ------------------------------------------------------------ */
 .reveal{opacity:0; transform:translateY(18px)}
@@ -602,7 +593,12 @@ footer a:hover{color:var(--ink); border-color:var(--ink)}
     </span>
     <span style="display:flex; gap:22px; flex-wrap:wrap; align-items:baseline">
       <a href="../">ほかにつくっているもの</a>
-      <a href="https://x.com/keijir" target="_blank" rel="noopener">X</a>
+      <a class="xlink" href="https://x.com/keijir" target="_blank" rel="noopener"
+         aria-label="X（@keijir）">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true">
+          <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/>
+        </svg>
+      </a>
       <a href="#signup">待機リスト</a>
     </span>
     <span class="tiny" style="width:100%; color:var(--faint)">© 2026 keijir</span>
