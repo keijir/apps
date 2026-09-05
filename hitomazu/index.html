@@ -16,9 +16,9 @@
        ただし同名アプリの有無は未確認。実機の App Store で「ひとまず」を検索し、
        衝突していたら次点の「とっておく」へ差し替える。直すのはこのファイルの
        <title> / og:title / .mark / footer の4か所と、mobile/app.json の expo.name。
-    2. 待機リストの送り先 —— <form> の action に Tally のフォームURL。
+    2. 待機リストの送り先 —— 済み（https://tally.so/r/1Aek7g）。
        項目とTally側の設定は docs/strategy/waitlist-form.md にある。
-       空のままだと送信できない（その旨が出る）。
+       Tally 側の1問目のキーを email にしていないと、引き継ぎが効かない。
     3. 画面の写真 —— docs/assets/screens/01〜08.png（実機のスクリーンショット）。
        無いあいだは、それぞれの枠に画面の名前が出るだけで、崩れない。
     4. OGP画像 —— docs/assets/ogp.png（1200×630）。
@@ -404,10 +404,53 @@ footer a:hover{color:var(--ink); border-color:var(--ink)}
   </div>
 </section>
 
-<!-- ============ 画面をべた見せする（有料で試せないので） ============ -->
+<!-- ============ イベント認識 → 写真アプリのアルバムへ ============ -->
 <section>
   <div class="wrap">
     <span class="num reveal">02</span>
+    <div class="narrow">
+      <h2 class="reveal">まとまりは、<br>勝手にできています。</h2>
+      <p class="lead reveal">
+        アルバムを作るために、写真を選ぶ作業はしません。
+        <mark>撮った間隔と、動いた距離から、区切りのほうが先に見つかります。</mark>
+      </p>
+    </div>
+
+    <div class="steps reveal">
+      <div class="step">
+        <div class="n">区</div>
+        <h3>90分あいて、2km動いたら</h3>
+        <p>そこがひとつの区切りです。同じ日に撮った写真が、ひとまとまりの候補として出ます。
+           要らない日は、候補から外してから作れます。</p>
+      </div>
+      <div class="step">
+        <div class="n">旅</div>
+        <h3>自宅から50km、日をまたいだら</h3>
+        <p>それは旅行として、何日ぶんかをひとつの候補にまとめます。
+           あとから2つのイベントを1つに統合することもできます。</p>
+      </div>
+      <div class="step">
+        <div class="n">返</div>
+        <h3>同じ名前のアルバムを、写真アプリへ</h3>
+        <p>イベントと同じ名前のアルバムを、iOSの「写真」アプリに置けます。
+           1件ずつでも、設定からまとめてでも。お気に入りも同じようにできます。</p>
+      </div>
+    </div>
+
+    <div class="price reveal narrow" style="margin-top:34px">
+      <ul style="margin:0">
+        <li><strong>アルバムを作っても、写真は増えません。</strong>アルバムは元の写真を指しているだけです。容量も増えません。</li>
+        <li><strong>このアプリを消しても、作ったアルバムは写真アプリに残ります。</strong>ここで整理した結果は、あなたの写真アプリのものになります。</li>
+        <li>写真アプリのアルバム数が上限に近づいたときは、そのイベントはこのアプリの中だけのアルバムとして持ちます。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 画面をべた見せする（有料で試せないので） ============ -->
+<section>
+  <div class="wrap">
+    <span class="num reveal">03</span>
     <div class="narrow">
       <h2 class="reveal">買う前に、全部見てください。</h2>
       <p class="lead reveal">
@@ -422,7 +465,7 @@ footer a:hover{color:var(--ink); border-color:var(--ink)}
 <!-- ============ 三本目：端末から出ない。だから無料にしない ============ -->
 <section>
   <div class="wrap">
-    <span class="num reveal">03</span>
+    <span class="num reveal">04</span>
     <div class="narrow">
       <h2 class="reveal">端末から出ません。<br>だから、無料にしません。</h2>
       <p class="lead reveal">
@@ -432,9 +475,35 @@ footer a:hover{color:var(--ink); border-color:var(--ink)}
         どのあたりの地図が要るかを配信元に伝えます。
         <span class="note">——ここを「一切通信しません」と書かないのは、それが嘘になるからです。</span>
       </p>
+      <p class="lead reveal">
+        外に出さないだけでは足りない場面もあります。<mark>端末そのものを人に渡すとき</mark>です。
+        そのための鍵も、中に入れてあります。
+      </p>
     </div>
 
-    <div class="price reveal narrow">
+    <div class="steps reveal" style="margin-top:38px">
+      <div class="step">
+        <div class="n">錠</div>
+        <h3>6桁で開く</h3>
+        <p>起動したときに、6桁の数字を聞くようにできます。端末を人に渡したときに、
+           写真がそのまま見えてしまうのを止められます。設定でいつでも切り替えられます。</p>
+      </div>
+      <div class="step">
+        <div class="n">伏</div>
+        <h3>見せたくない写真は、伏せる</h3>
+        <p>シークレットモードに入れた写真は、<strong>端末の写真アプリからも外れて</strong>
+           このアプリの中だけに残ります。モードをオンにしているあいだしか出てきません。
+           写真だけでなく、イベントや人も同じように隠せます。</p>
+      </div>
+      <div class="step">
+        <div class="n">戻</div>
+        <h3>やめても、中身は消えません</h3>
+        <p>パスコードを外しても、6桁もシークレットの中身も消えません。掛け直せば元どおりです。
+           使わないと決めたときに、何かを失わせない作りにしてあります。</p>
+      </div>
+    </div>
+
+    <div class="price reveal narrow" style="margin-top:38px">
       <div class="amount">¥600<small>買い切り・一度きり</small></div>
       <ul>
         <li>無料のアプリは、いつかどこかで別の稼ぎ方を探します。広告か、データか、月々の課金か。</li>
@@ -449,7 +518,7 @@ footer a:hover{color:var(--ink); border-color:var(--ink)}
 <!-- ============ できないことを、買う前に ============ -->
 <section>
   <div class="wrap">
-    <span class="num reveal">04</span>
+    <span class="num reveal">05</span>
     <div class="narrow">
       <h2 class="reveal">まだ、できないこと。</h2>
       <p class="lead reveal">
@@ -465,11 +534,6 @@ footer a:hover{color:var(--ink); border-color:var(--ink)}
       <div>
         <dt>似た写真・ブレの判定</dt>
         <dd>同上。連写の中から1枚を選ぶような判定は、まだ入っていません。</dd>
-      </div>
-      <div>
-        <dt>「重複項目」の取り込み</dt>
-        <dd>iOSの「写真」アプリが作る重複項目の一覧は、外のアプリに渡されません。
-            こちらからは読めないので、入口ごと外してあります。</dd>
       </div>
       <div>
         <dt>クラウド同期・家族との共有</dt>
@@ -500,7 +564,7 @@ footer a:hover{color:var(--ink); border-color:var(--ink)}
         並んだ人の数で決めています。<strong style="color:#fff">名前が並べば、出します。</strong>
       </p>
       <!--
-        TODO: action= に Tally のフォームURL（https://tally.so/r/XXXXXX）を入れる。
+        送り先は Tally（https://tally.so/r/1Aek7g）。
         method="GET" なので、押すと ?email=... 付きで Tally へ飛び、1問目が
         埋まった状態で開く。JavaScript が動かない環境でもそのまま通る。
         Tally 側の1問目のキーを email にしておくこと（項目は
@@ -508,7 +572,7 @@ footer a:hover{color:var(--ink); border-color:var(--ink)}
         どこから来たかを数えるので、配る先ごとに末尾を変える:
           .../#signup?src=x  → hidden の src に入れる（同ファイル参照）
       -->
-      <form class="form" id="waitForm" action="" method="GET" target="_blank" rel="noopener">
+      <form class="form" id="waitForm" action="https://tally.so/r/1Aek7g" method="GET" target="_blank" rel="noopener">
         <label for="email" class="tiny" style="position:absolute;left:-9999px">メールアドレス</label>
         <input id="email" name="email" type="email" required
                placeholder="メールアドレス" autocomplete="email">
@@ -566,11 +630,13 @@ footer a:hover{color:var(--ink); border-color:var(--ink)}
     ['01', 'ホーム',        '撮った順に並ぶ。1日の先頭が大きい'],
     ['02', 'Viewer',        '左で削除候補、右で残す。指に追従して傾く'],
     ['03', 'ホームの帯',    'まとめられそうな写真が、見ているついでに出る'],
-    ['04', '整理',          '削除候補の枚数と、実際に空く容量'],
-    ['05', '振り返る',      '行った都道府県が埋まっていく'],
-    ['06', 'X年前の今日',   '同じ月日の、過去の1枚'],
-    ['07', '作る',          '4:5 / 1:1 / 9:16 に整えて書き出す'],
-    ['08', '設定',          '自宅と地元、家族、パスコード']
+    ['04', 'イベント候補',  '間隔と距離で区切られた、まとまりの候補'],
+    ['05', 'イベント',      '同じ名前のアルバムを、写真アプリへ'],
+    ['06', '整理',          '削除候補の枚数と、実際に空く容量'],
+    ['07', '振り返る',      '行った都道府県が埋まっていく'],
+    ['08', 'X年前の今日',   '同じ月日の、過去の1枚'],
+    ['09', '作る',          '4:5 / 1:1 / 9:16 に整えて書き出す'],
+    ['10', 'パスコード',    '起動時に6桁。その先にシークレット']
   ];
   var host = document.getElementById('sheet');
   SCREENS.forEach(function(s){
