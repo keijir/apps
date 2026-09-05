@@ -18,7 +18,10 @@
        <title> / og:title / .mark / footer の4か所と、mobile/app.json の expo.name。
     2. 待機リストの送り先 —— 済み（https://tally.so/r/1Aek7g）。
        項目とTally側の設定は docs/strategy/waitlist-form.md にある。
-    3. 画面の写真 —— docs/assets/screens/01〜08.png（実機のスクリーンショット）。
+    3. 画面の写真 —— docs/assets/screens/01〜10.jpg。
+       ここに置くのは幅800pxのJPEGで、フル解像度のものではない。表示は幅200px
+       なので、2倍の画面でも800pxで足りる。ストアへ出すぶんは別に取っておくこと
+       （App Store Connect には実機の解像度のまま上げる）。
        無いあいだは、それぞれの枠に画面の名前が出るだけで、崩れない。
     4. OGP画像 —— docs/assets/ogp.png（1200×630）。
 
@@ -222,13 +225,19 @@ figure{margin:0}
   position:relative; aspect-ratio:9/19.5; border-radius:var(--r-md); overflow:hidden;
   background:var(--canvas-soft); border:1px solid var(--hairline);
 }
-.phone img{width:100%; height:100%; object-fit:cover}
+/* 読み込みが済むまでは透かしておく。display:none にしてはいけない——
+   loading="lazy" の画像は display:none だと永久に取りに行かず、load が
+   発火せず、いつまでも見本のままになる。場所は取らせたまま、透明にする */
+.phone img{
+  width:100%; height:100%; object-fit:cover;
+  opacity:0; transition:opacity .45s ease;
+}
+.phone:not(.pending) img{opacity:1}
 .phone.pending::after{
   content:attr(data-label); position:absolute; inset:0; display:grid;
   place-content:center; text-align:center; padding:20px; color:var(--muted);
   font-size:12.5px; line-height:1.8; white-space:pre-line;
 }
-.phone.pending img{display:none}
 figcaption{margin-top:11px; font-size:12.5px; color:var(--muted); line-height:1.7}
 
 /* --- 値段 ---------------------------------------------------------------- */
@@ -623,9 +632,9 @@ footer a:hover{color:var(--ink); border-color:var(--ink)}
     ['01', 'ホーム',        '撮った順に並ぶ。1日の先頭が大きい'],
     ['02', 'Viewer',        '左で削除候補、右で残す。指に追従して傾く'],
     ['03', 'ホームの帯',    'まとめられそうな写真が、見ているついでに出る'],
-    ['04', 'イベント候補',  '間隔と距離で区切られた、まとまりの候補'],
-    ['05', 'イベント',      '同じ名前のアルバムを、写真アプリへ'],
-    ['06', '整理',          '削除候補の枚数と、実際に空く容量'],
+    ['04', 'イベント',      '作ったイベントの一覧。長押しで2つをひとつに統合できる'],
+    ['05', 'イベント候補',  '間隔と距離で区切られた、まとまりの候補'],
+    ['06', '整理',          '削除候補の枚数と、まとめての片づけ'],
     ['07', '振り返る',      '行った都道府県が埋まっていく'],
     ['08', 'X年前の今日',   '同じ月日の、過去の1枚'],
     ['09', '作る',          '4:5 / 1:1 / 9:16 に整えて書き出す'],
@@ -641,7 +650,8 @@ footer a:hover{color:var(--ink); border-color:var(--ink)}
     img.alt = s[1] + 'の画面';
     img.loading = 'lazy';
     img.addEventListener('load', function(){ box.classList.remove('pending'); });
-    img.src = 'assets/screens/' + s[0] + '.png';
+    img.addEventListener('error', function(){ box.classList.add('pending'); });
+    img.src = 'assets/screens/' + s[0] + '.jpg';
     box.appendChild(img);
     var cap = document.createElement('figcaption');
     cap.textContent = s[1] + '　' + s[2];
