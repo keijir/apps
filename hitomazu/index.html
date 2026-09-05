@@ -556,13 +556,16 @@ footer a:hover{color:var(--ink); border-color:var(--ink)}
         並んだ人の数で決めています。<strong style="color:#fff">名前が並べば、出します。</strong>
       </p>
       <!--
-        送り先は Tally（https://tally.so/r/1Aek7g）。メールの入力欄はここに置かない
-        ——無料プランでは1問目への引き継ぎ（prefill）ができず、置くと
-        「入れたのにもう一度聞かれる」ことになるため。聞くのは Tally 側で1回だけ。
+        送り先は Tally（https://tally.so/r/1Aek7g）。ここはただのリンクにしてある。
 
-        ?src=... は付けたまま飛ばす。Tally 側で hidden field が使えるなら
-        そこに入り、使えなければ黙って無視される。どちらでも壊れない。
-        入口の数えかたは docs/strategy/waitlist-form.md の「どこで知りましたか」。
+        メールの入力欄を置かないのは、無料プランでは1問目への引き継ぎ（prefill）が
+        できず、置くと「入れたのにもう一度聞かれる」ことになるため。聞くのは
+        Tally 側で1回だけ。
+
+        どこから来たかを引き継ぐ配線（?src=...）も持っていない。無料プランでは
+        hidden field が受け取れず、動かないものを置いておくと「測れている」と
+        錯覚するので、外してある。要るようになったときの戻しかたは
+        docs/strategy/waitlist-form.md の「入口を数えたくなったら」。
       -->
       <p class="cta-block">
         <a class="pill" id="waitLink" href="https://tally.so/r/1Aek7g"
@@ -822,24 +825,6 @@ footer a:hover{color:var(--ink); border-color:var(--ink)}
   build(); tally();
 })();
 
-/* ---------------------------------------------------------------------------
-   待機リスト。送り先が未設定のうちは、黙って失敗させずにそう言う。
---------------------------------------------------------------------------- */
-(function(){
-  // どこから来たかを、Tally へ引き継ぐ。?src=x のような形で配る。
-  // Tally 側で hidden field が使えなければ無視されるだけなので、壊れない。
-  // 確実に数えたいときは、Tally の「どこで知りましたか」のほうを見る。
-  var link = document.getElementById('waitLink');
-  if (!link) return;
-  try {
-    var src = new URLSearchParams(location.search).get('src');
-    if (src) {
-      var u = new URL(link.href);
-      u.searchParams.set('src', src.slice(0, 40));
-      link.href = u.toString();
-    }
-  } catch (e) { /* 古い環境。素のリンクのままで困らない */ }
-})();
 </script>
 
 </body>
