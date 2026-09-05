@@ -18,7 +18,6 @@
        <title> / og:title / .mark / footer の4か所と、mobile/app.json の expo.name。
     2. 待機リストの送り先 —— 済み（https://tally.so/r/1Aek7g）。
        項目とTally側の設定は docs/strategy/waitlist-form.md にある。
-       Tally 側の1問目のキーを email にしていないと、引き継ぎが効かない。
     3. 画面の写真 —— docs/assets/screens/01〜08.png（実機のスクリーンショット）。
        無いあいだは、それぞれの枠に画面の名前が出るだけで、崩れない。
     4. OGP画像 —— docs/assets/ogp.png（1200×630）。
@@ -258,15 +257,8 @@ figcaption{margin-top:11px; font-size:12.5px; color:var(--muted); line-height:1.
 .signup h2{color:#fff; margin-bottom:18px}
 .signup .lead{color:rgba(255,255,255,.72)}
 .signup .tiny{color:rgba(255,255,255,.5)}
-.form{display:flex; flex-wrap:wrap; gap:11px; margin:30px 0 16px}
-.form input{
-  flex:1 1 260px; min-height:52px; padding:0 22px; border-radius:var(--r-full);
-  border:1px solid rgba(255,255,255,.24); background:rgba(255,255,255,.06);
-  color:#fff; font-family:var(--sans); font-size:15px;
-}
-.form input::placeholder{color:rgba(255,255,255,.56)}
-.form input:focus{outline:none; border-color:#fff; background:rgba(255,255,255,.1)}
-.form .pill{background:#fff; color:var(--ink); border-color:#fff; flex:none}
+.cta-block{display:flex; flex-wrap:wrap; align-items:center; gap:14px 18px; margin:30px 0 0}
+.cta-block .pill{background:#fff; color:var(--ink); border-color:#fff; flex:none}
 .form-msg{font-size:13.5px; line-height:1.8; color:rgba(255,255,255,.82); min-height:1.8em}
 
 /* --- 脚 ------------------------------------------------------------------ */
@@ -564,23 +556,21 @@ footer a:hover{color:var(--ink); border-color:var(--ink)}
         並んだ人の数で決めています。<strong style="color:#fff">名前が並べば、出します。</strong>
       </p>
       <!--
-        送り先は Tally（https://tally.so/r/1Aek7g）。
-        method="GET" なので、押すと ?email=... 付きで Tally へ飛び、1問目が
-        埋まった状態で開く。JavaScript が動かない環境でもそのまま通る。
-        Tally 側の1問目のキーを email にしておくこと（項目は
-        docs/strategy/waitlist-form.md）。
-        どこから来たかを数えるので、配る先ごとに末尾を変える:
-          .../#signup?src=x  → hidden の src に入れる（同ファイル参照）
+        送り先は Tally（https://tally.so/r/1Aek7g）。メールの入力欄はここに置かない
+        ——無料プランでは1問目への引き継ぎ（prefill）ができず、置くと
+        「入れたのにもう一度聞かれる」ことになるため。聞くのは Tally 側で1回だけ。
+
+        ?src=... は付けたまま飛ばす。Tally 側で hidden field が使えるなら
+        そこに入り、使えなければ黙って無視される。どちらでも壊れない。
+        入口の数えかたは docs/strategy/waitlist-form.md の「どこで知りましたか」。
       -->
-      <form class="form" id="waitForm" action="https://tally.so/r/1Aek7g" method="GET" target="_blank" rel="noopener">
-        <label for="email" class="tiny" style="position:absolute;left:-9999px">メールアドレス</label>
-        <input id="email" name="email" type="email" required
-               placeholder="メールアドレス" autocomplete="email">
-        <input type="hidden" name="src" id="srcField" value="lp">
-        <button class="pill" type="submit">待機リストに入る</button>
-      </form>
-      <p class="form-msg" id="formMsg" role="status" aria-live="polite">
-        ここで預かるのは、メールアドレスだけです。お知らせを送ったら、消します。
+      <p class="cta-block">
+        <a class="pill" id="waitLink" href="https://tally.so/r/1Aek7g"
+           target="_blank" rel="noopener">待機リストに入る</a>
+        <span class="form-msg">30秒で終わります。聞くのは5つだけです。</span>
+      </p>
+      <p class="form-msg" style="margin-top:18px">
+        預かるのは、メールアドレスだけです。お知らせを送ったら、消します。
       </p>
       <p class="tiny" style="margin:20px 0 0">
         アプリが写真を送らないことと、あなたが自分の意思でメールを預けることは、別の話です。
@@ -836,25 +826,19 @@ footer a:hover{color:var(--ink); border-color:var(--ink)}
    待機リスト。送り先が未設定のうちは、黙って失敗させずにそう言う。
 --------------------------------------------------------------------------- */
 (function(){
-  var form = document.getElementById('waitForm');
-  var out  = document.getElementById('formMsg');
-  if (!form) return;
-
-  // どこから来たかを、Tally の hidden へ引き継ぐ。?src=x のような形で配る。
-  // 解析を入れずに、どの入口が効いたかを数えるための唯一の手段。
+  // どこから来たかを、Tally へ引き継ぐ。?src=x のような形で配る。
+  // Tally 側で hidden field が使えなければ無視されるだけなので、壊れない。
+  // 確実に数えたいときは、Tally の「どこで知りましたか」のほうを見る。
+  var link = document.getElementById('waitLink');
+  if (!link) return;
   try {
     var src = new URLSearchParams(location.search).get('src');
-    if (src) document.getElementById('srcField').value = src.slice(0, 40);
-  } catch (e) { /* 古い環境。既定の lp のままで困らない */ }
-
-  form.addEventListener('submit', function(e){
-    if (!form.getAttribute('action')) {
-      e.preventDefault();
-      out.innerHTML = '（準備中です。フォームの送り先がまだ設定されていません。）';
-      return;
+    if (src) {
+      var u = new URL(link.href);
+      u.searchParams.set('src', src.slice(0, 40));
+      link.href = u.toString();
     }
-    out.innerHTML = '別のタブでフォームが開きます。あと3つだけ聞かせてください。';
-  });
+  } catch (e) { /* 古い環境。素のリンクのままで困らない */ }
 })();
 </script>
 
