@@ -1,56 +1,186 @@
 <!doctype html>
 <!--
   keijir/apps の入口。https://keijir.github.io/apps/ に出る。
-  アプリが増えたら、ここに1行足す。中身はこれだけでよく、凝らない。
+  ここは出力なので直さない。原本は PhotoViewer/docs/site-index.html。
+
+  埋めるところ（2つ）:
+    1. About の本文 —— いまは事実だけを1行置いてある。自分の言葉に差し替える
+    2. bakuei.com の1行説明 —— 中身を確かめられなかったので空にしてある。
+       data-note を書けばそのまま出る
+
+  つくったものが増えたら <article class="work"> を1つ足すだけ。
 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>つくっているもの</title>
-<meta name="description" content="個人でつくっている iPhone アプリのページです。">
+<title>keijir — つくっているもの</title>
+<meta name="description" content="keijir が個人でつくっているアプリとサービスです。">
+<meta property="og:title" content="keijir — つくっているもの">
+<meta property="og:description" content="個人でつくっているアプリとサービスです。">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" href="hitomazu/assets/icon.png" sizes="any">
+<link rel="apple-touch-icon" href="hitomazu/assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-:root{ color-scheme:light }
-*,*::before,*::after{ box-sizing:border-box }
+/* ひとまず側と同じトークン。同じ人が作っている、と見た目で分かるほうがいい */
+:root{
+  --canvas:#ffffff; --canvas-soft:#f3f3f3; --field:#f0f0f0;
+  --hairline:#e0e0e0; --hairline-soft:#f0f0f0;
+  --ink:#141414; --muted:#707070; --faint:#adadad; --accent:#0066ff;
+  --r-sm:16px; --r-md:24px; --r-full:9999px;
+  --mincho:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN",
+         "Yu Gothic","Noto Sans JP",sans-serif;
+  --gut:clamp(20px,5vw,56px);
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
 body{
-  margin:0; min-height:100vh; background:#fff; color:#141414;
-  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN",
-    "Yu Gothic","Noto Sans JP",sans-serif;
-  font-feature-settings:"palt" 1; line-height:1.8;
-  display:grid; place-content:center; padding:40px 24px;
+  margin:0; background:var(--canvas); color:var(--ink);
+  font-family:var(--sans); font-size:16px; line-height:1.8;
+  font-feature-settings:"palt" 1; -webkit-font-smoothing:antialiased;
 }
-main{ max-width:520px; width:100% }
-h1{
-  font-family:"Hiragino Mincho ProN","Yu Mincho",serif;
-  font-size:19px; font-weight:600; letter-spacing:.04em; margin:0 0 28px; color:#707070;
+body::after{
+  content:""; position:fixed; inset:0; z-index:9; pointer-events:none;
+  opacity:.028; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-a.row{
-  display:flex; align-items:center; gap:18px; padding:18px 20px; margin-bottom:12px;
-  border:1px solid #e0e0e0; border-radius:24px; text-decoration:none; color:inherit;
+img{max-width:100%; display:block}
+a{color:inherit}
+.wrap{max-width:720px; margin:0 auto; padding-inline:var(--gut)}
+section{padding-block:clamp(44px,7vw,72px)}
+section+section{border-top:1px solid var(--hairline-soft)}
+
+header{border-bottom:1px solid var(--hairline-soft)}
+header .wrap{display:flex; align-items:center; justify-content:space-between;
+  min-height:64px; gap:16px}
+.mark{font-family:var(--mincho); font-weight:800; font-size:17px; letter-spacing:.06em;
+  text-decoration:none; white-space:nowrap}
+
+h1{font-family:var(--mincho); font-size:clamp(28px,5.4vw,44px); font-weight:800;
+  line-height:1.42; margin:0 0 22px; letter-spacing:.01em}
+h2{font-family:var(--mincho); font-size:13px; font-weight:600; color:var(--muted);
+  letter-spacing:.22em; margin:0 0 26px}
+h2::after{content:""; display:inline-block; width:34px; height:1px;
+  background:var(--hairline); vertical-align:4px; margin-left:12px}
+p{margin:0 0 18px}
+.lead{font-size:clamp(15px,1.8vw,17px); line-height:2; color:var(--ink); font-weight:300}
+.tiny{font-size:12.5px; line-height:1.8; color:var(--muted)}
+
+/* つくったもの。増えたら article を足すだけ */
+.work{
+  display:flex; gap:18px; align-items:flex-start; padding:20px;
+  border:1px solid var(--hairline); border-radius:var(--r-md);
+  text-decoration:none; margin-bottom:12px;
   transition:border-color .16s, transform .16s cubic-bezier(.2,.8,.3,1);
 }
-a.row:hover{ border-color:#141414; transform:translateY(-2px) }
-a.row img{ width:52px; height:52px; border-radius:12px; border:1px solid #e0e0e0; flex:none }
-.name{ font-weight:600; font-size:16px }
-.sub{ font-size:13px; color:#707070 }
-footer{ margin-top:30px; font-size:12px; color:#707070 }
+.work:hover{border-color:var(--ink); transform:translateY(-2px)}
+.work .tile{
+  width:56px; height:56px; border-radius:14px; flex:none; overflow:hidden;
+  border:1px solid var(--hairline); background:var(--canvas-soft);
+  display:grid; place-content:center;
+  font-family:var(--mincho); font-size:24px; font-weight:800; color:var(--muted);
+}
+.work .tile img{width:100%; height:100%; object-fit:cover}
+/* 中の3行は積む。span のままだと横に流れて1行になる */
+.work>span:last-child{display:flex; flex-direction:column; gap:3px; min-width:0}
+.work .name{display:block; font-weight:600; font-size:16.5px; line-height:1.5}
+.work .name .badge{vertical-align:2px}
+.work .note{display:block; font-size:13.5px; color:var(--muted); line-height:1.75}
+.work .note:empty{display:none}
+.work .badge{
+  display:inline-block; margin-left:9px; padding:2px 10px; border-radius:var(--r-full);
+  background:var(--ink); color:#fff; font-size:11px; font-weight:600;
+  letter-spacing:.04em; white-space:nowrap;
+}
+.work .host{display:block; font-size:12px; color:var(--muted); margin-top:4px}
+
+.links{list-style:none; margin:0; padding:0; display:grid; gap:2px}
+.links a{
+  display:flex; align-items:baseline; gap:14px; padding:14px 2px;
+  border-bottom:1px solid var(--hairline-soft); text-decoration:none;
+}
+.links a:hover .u{border-color:var(--ink); color:var(--ink)}
+.links .k{font-size:13px; color:var(--muted); min-width:5.5em}
+.links .u{color:var(--muted); border-bottom:1px solid var(--hairline); padding-bottom:1px}
+
+footer{padding-block:36px 56px; border-top:1px solid var(--hairline-soft)}
+footer .wrap{display:flex; flex-wrap:wrap; gap:10px 24px; justify-content:space-between}
 </style>
 </head>
 <body>
+
+<header>
+  <div class="wrap">
+    <a class="mark" href="./">keijir</a>
+    <a class="tiny" href="https://x.com/keijir" target="_blank" rel="noopener"
+       style="text-decoration:none">X&nbsp;→</a>
+  </div>
+</header>
+
 <main>
-  <h1>つくっているもの</h1>
 
-  <a class="row" href="hitomazu/">
-    <img src="hitomazu/assets/icon.png" alt="">
-    <span>
-      <span class="name">ひとまず</span><br>
-      <span class="sub">毎日ひらく、静かな写真ビューア　—　待機リスト受付中</span>
-    </span>
-  </a>
+<section>
+  <div class="wrap">
+    <h1>つくっているもの</h1>
+    <!-- TODO: ここを自分の言葉に。いまは事実だけを置いてある -->
+    <p class="lead">
+      東京で、ひとりでアプリとサービスをつくっています。
+    </p>
+  </div>
+</section>
 
-  <footer>個人がひとりで作っています。</footer>
+<section>
+  <div class="wrap">
+    <h2>WORKS</h2>
+
+    <a class="work" href="hitomazu/">
+      <span class="tile"><img src="hitomazu/assets/icon.png" alt=""></span>
+      <span>
+        <span class="name">ひとまず<span class="badge">待機リスト受付中</span></span>
+        <span class="note">毎日ひらく、静かな写真アルバム。消すかどうかを、いま決めなくていい。</span>
+        <span class="host">iPhone · 2026年11月ごろ · 買い切り ¥600 の予定</span>
+      </span>
+    </a>
+
+    <!-- TODO: 1行説明（class="note"）を書く。中身を確かめられなかったので空にしてある -->
+    <a class="work" href="https://bakuei.com/" target="_blank" rel="noopener">
+      <span class="tile">b</span>
+      <span>
+        <span class="name">bakuei</span>
+        <span class="note"></span>
+        <span class="host">bakuei.com</span>
+      </span>
+    </a>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>LINKS</h2>
+    <ul class="links">
+      <li><a href="https://x.com/keijir" target="_blank" rel="noopener">
+        <span class="k">X</span><span class="u">@keijir</span></a></li>
+      <li><a href="https://github.com/keijir" target="_blank" rel="noopener">
+        <span class="k">GitHub</span><span class="u">github.com/keijir</span></a></li>
+      <li><a href="https://bakuei.com/" target="_blank" rel="noopener">
+        <span class="k">bakuei</span><span class="u">bakuei.com</span></a></li>
+    </ul>
+  </div>
+</section>
+
 </main>
+
+<footer>
+  <div class="wrap">
+    <span class="tiny">© 2026 keijir</span>
+    <span class="tiny">個人でつくっています。</span>
+  </div>
+</footer>
+
 </body>
 </html>
