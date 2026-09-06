@@ -216,8 +216,11 @@ header .pill{flex:none; white-space:nowrap}
 .step p{margin:0; font-size:14.5px; line-height:1.9; color:var(--muted)}
 
 /* --- 画面（べた見せ） ---------------------------------------------------- */
+/* 最小幅は 175px。200px にすると狭い画面で1列に落ち、この節だけで
+   9000px 近いスクロールになる。42vw だと iPhone SE の幅で 0.5px 足りず
+   1列に落ちたので 40vw。これで SE でも2列、机上では4列に収まる */
 .sheet{display:grid; gap:22px; margin-top:44px;
-  grid-template-columns:repeat(auto-fill,minmax(min(200px,44vw),1fr))}
+  grid-template-columns:repeat(auto-fill,minmax(min(175px,40vw),1fr))}
 figure{margin:0}
 .phone{
   position:relative; aspect-ratio:9/19.5; border-radius:var(--r-md); overflow:hidden;
@@ -630,7 +633,11 @@ footer a:hover{color:var(--ink); border-color:var(--ink)}
     rows.forEach(function(r){
       if (r.isIntersecting) { r.target.classList.add('in'); io.unobserve(r.target); }
     });
-  }, { rootMargin: '0px 0px -8% 0px', threshold: .08 });
+    // 閾値は 0 にする。割合で指定すると、表示領域より高い要素では
+    // 到達しない——画面10枚のグリッドは 9000px 近くあり、8% は表示領域より
+    // 大きい。永久に発火せず、透明のまま出てこなくなる。
+    // 下の余白だけで「十分入ってきたか」を決めれば、高さに関係なく効く。
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0 });
   els.forEach(function(e){ io.observe(e); });
 })();
 
