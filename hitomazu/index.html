@@ -9,10 +9,11 @@
   写した先は出力なので直さない。
 
   残っていること:
-    - OGP画像（docs/assets/ogp.png・1200×630）。無くても崩れないが、
-      Xに貼ったときの見え方が弱くなる
     - App Store に「ひとまず」の同名アプリが無いかの確認。あった場合に直すのは
       <title> / og:title / .mark / footer と、mobile/app.json の expo.name
+
+  OGPの画像とURLは絶対URLで書いてある。相対パスにすると X も Slack も
+  解決できず、カードが出ない。公開URLを変えるときは、ここも一緒に直すこと。
 
   値段と「まだ入っていないもの」をここに書いてあるのは意図的。隠して集めた
   待機リストは、測ったことにならないため（docs/strategy/promotion.md 4.）。
@@ -24,11 +25,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ひとまず — 消さずに片づく写真アルバム</title>
 <meta name="description" content="毎日ひらく、静かな写真ビューア。整理する時間を、そもそも取らなくていい。写真も、どれを外したかも、端末の中だけにあります。iPhone向け・買い切り¥600で準備中。">
-<meta property="og:title" content="ひとまず — 消さずに片づく写真アルバム">
-<meta property="og:description" content="消すかどうかを、いま決めなくていい。毎日ひらく、静かな写真ビューア。">
+<!-- OGPの画像とURLは、必ず絶対URLで書く。相対パスだと X も Slack も解決できない -->
 <meta property="og:type" content="website">
-<meta property="og:image" content="assets/ogp.png">
+<meta property="og:url" content="https://keijir.github.io/apps/hitomazu/">
+<meta property="og:site_name" content="ひとまず">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="ひとまず — 消さずに片づく写真アルバム">
+<meta property="og:description" content="消すかどうかを、いま決めなくていい。毎日ひらく、静かな写真アルバム。写真も、どれを外したかも、端末の外に出ません。">
+<meta property="og:image" content="https://keijir.github.io/apps/hitomazu/assets/ogp.png">
+<meta property="og:image:width" content="1424">
+<meta property="og:image:height" content="752">
+<meta property="og:image:alt" content="ひとまず — 消すかどうかを、いま決めなくていい。">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@keijir">
+<meta name="twitter:creator" content="@keijir">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" href="assets/icon.png" sizes="any">
 <link rel="apple-touch-icon" href="assets/icon.png">
